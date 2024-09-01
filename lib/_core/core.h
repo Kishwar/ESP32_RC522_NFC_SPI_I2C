@@ -1,3 +1,4 @@
+#pragma once
 /**
  * @file core.cc
  *
@@ -10,7 +11,10 @@
  *
  */
 
-class Core {
+#include "rc522_spi.h"
+#include "rc522_i2c.h"
+
+class Core: private Rc522Spi, Rc522I2C {
   public:
     static Core& getInstance(void);
     void Thread();

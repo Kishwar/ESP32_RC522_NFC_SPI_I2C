@@ -1,3 +1,4 @@
+#pragma once
 /**
  * @file rc522_spi.cc
  *
@@ -11,7 +12,7 @@
  */
 
 class Rc522I2C {
-    public:
+    protected:
         Rc522I2C();
         ~Rc522I2C();
 

@@ -52,7 +52,7 @@ static void taskWrapper(void *pvParameters) {
 Core::Core()
 {
   // create a RTOS task (this should be only once)
-  xTaskCreate(taskWrapper, "TaskName", 2048, this, 1, NULL);
+  xTaskCreate(taskWrapper, "TaskName", 4096, this, 1, NULL);
 }
 
 Core::~Core() {

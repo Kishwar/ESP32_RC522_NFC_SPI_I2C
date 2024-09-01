@@ -11,11 +11,14 @@
  */
 
 #include "rc522_i2c.h"
+#include "esp_log.h"
+
+const char TAG[] = "RC522I2C";
 
 Rc522I2C::Rc522I2C() {
-
+  ESP_LOGI(TAG, "Rc522I2C created");
 }
 
 Rc522I2C::~Rc522I2C() {
-
+  ESP_LOGI(TAG, "Rc522I2C destroyed");
 }

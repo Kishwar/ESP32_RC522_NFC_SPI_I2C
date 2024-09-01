@@ -1,6 +1,16 @@
-# This file was automatically generated for projects
-# without default 'CMakeLists.txt' file.
+##
+ # @file CMakeLists.txt
+ #
+ # @brief CMake file for main source directory
+ #
+ # @author Kishwar Kumar
+ # Contact: kumar.kishwar@gmail.com
+ # 
+ # @date 01/09/2024
+ #
+ ##
 
-FILE(GLOB_RECURSE app_sources ${CMAKE_SOURCE_DIR}/src/*.*)
-
-idf_component_register(SRCS ${app_sources})
+ set(COMPONENT_SRCS "main.cc")
+ set(COMPONENT_ADD_INCLUDEDIRS "../lib/_core")
+ 
+ register_component()

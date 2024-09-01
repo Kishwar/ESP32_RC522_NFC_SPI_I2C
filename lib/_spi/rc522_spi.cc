@@ -10,31 +10,42 @@
  *
  */
 
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
+#include <esp_system.h>
+
 #include "rc522_spi.h"
 #include "esp_log.h"
 
-const char TAG[] = "RC522SPI";
+const char TAG_RC522SPI[] = "RC522SPI";
 
 Rc522Spi::Rc522Spi() {
-  ESP_LOGI(TAG, "RC522SPI");
-  std::unique_ptr<SpiDevice> spi = std::make_unique<SpiDevice>(RC522_DEFAULT_SCAN_INTERVAL_MS, RC522_DEFAULT_TASK_STACK_SIZE,
-                                      RC522_DEFAULT_TASK_STACK_PRIORITY, (spi_host_device_t)0,
-                                      PIN_MISO, PIN_MISO, PIN_SCK, PIN_SS, 0 /*not used*/,
-                                      RC522_DEFAULT_SPI_CLOCK_SPEED_HZ, 0);
+  ESP_LOGI(TAG_RC522SPI, "%d: %s(): ENTER", __LINE__, __FILE__);
+  SpiDevice *spi = new SpiDevice(RC522_DEFAULT_SCAN_INTERVAL_MS,
+                                 RC522_DEFAULT_TASK_STACK_SIZE, RC522_DEFAULT_TASK_STACK_PRIORITY,
+                                 SPI2_HOST, PIN_MISO, PIN_MISO, PIN_SCK, PIN_SS,
+                                 0 /*not used*/, RC522_DEFAULT_SPI_CLOCK_SPEED_HZ, 0);
 
   // initialize hardware peripherals
   init_spi(spi);
 
+  esp_event_loop_args_t event_args = {
+    .queue_size = 1,
+    .task_name = nullptr, // no task will be created
+  };
+
+  esp_event_loop_create(&event_args, &(spi->event_handle));
+
   // trigger a thread to scan any incoming card
   thread_spi(spi);
-  ESP_LOGI(TAG, "RC522SPI created");
+  ESP_LOGI(TAG_RC522SPI, "%d: %s(): EXIT", __LINE__, __FILE__);
 }
 
 Rc522Spi::~Rc522Spi() {
-  ESP_LOGI(TAG, "RC522SPI destroyed");
+  ESP_LOGI(TAG_RC522SPI, "%d: %s(): ENTER", __LINE__, __FILE__);
 }
 
-void Rc522Spi::init_spi(std::unique_ptr<SpiDevice>& spi) {
+void Rc522Spi::init_spi(SpiDevice *spi) {
   spi_device_interface_config_t devcfg = {
     .mode = 0,
     .clock_speed_hz = spi->clock_speed_hz,
@@ -55,6 +66,25 @@ void Rc522Spi::init_spi(std::unique_ptr<SpiDevice>& spi) {
   spi_bus_add_device(spi->host, &devcfg, &spi->spi_handle);
 }
 
-void thread_spi(const std::unique_ptr<SpiDevice>& spi) {
+void Rc522Spi::Thread() {
+  if(_thread_running) { 
+    ESP_LOGI(TAG_RC522SPI, "%d: %s(): Thread already running..", __LINE__, __FILE__);
+    return;
+  }
 
+  _thread_running = true;
+  while(true) {
+    ESP_LOGI(TAG_RC522SPI, "%d: %s(): SPI looping..", __LINE__, __FILE__);
+    vTaskDelay(5000 / portTICK_PERIOD_MS);
+  }
+}
+
+static void taskWrapper(void *pvParameters) {
+  Rc522Spi *rc522Spi = static_cast<Rc522Spi *>(pvParameters);
+  rc522Spi->Thread();
+}
+
+void Rc522Spi::thread_spi(SpiDevice *spi)
+{
+  xTaskCreate(taskWrapper, "taskWrapper", 4096, this, 1, nullptr);
 }

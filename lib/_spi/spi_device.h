@@ -15,6 +15,7 @@
 #include <cstddef>
 
 #include <driver/spi_master.h>
+#include <esp_event.h>
 
 #include "esp_log.h"
 
@@ -56,4 +57,7 @@ class SpiDevice {
     bool is_bus_initialized;
 
     spi_device_handle_t spi_handle = nullptr;
+    esp_event_loop_handle_t event_handle = nullptr;        /*<! Handle of event loop */
+
+    bool _thread_running = false;
 };

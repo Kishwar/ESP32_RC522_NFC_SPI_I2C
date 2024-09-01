@@ -11,10 +11,12 @@
  */
 
 class Core {
-    public:
-        Core();
-        ~Core();
+  public:
+    static Core& getInstance(void);
+    void Thread();
 
-    private:
-        
+  private:
+    bool _thread_running = false;
+    Core();
+    ~Core();
 };

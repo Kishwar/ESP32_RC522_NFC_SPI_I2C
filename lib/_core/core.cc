@@ -26,7 +26,7 @@ const char TAG_CORE[] = "CORE";
 Core &Core::getInstance(void)
 {
   if(instance == nullptr) {
-    ESP_LOGI(TAG_CORE, "new Core Instance created");
+    ESP_LOGI(TAG_CORE, "%d: %s(): new Core Instance created", __LINE__, __FILE__);
     instance = new Core();
   }
   return *instance;
@@ -34,13 +34,13 @@ Core &Core::getInstance(void)
 
 void Core::Thread() {
   if(_thread_running) { 
-    ESP_LOGE(TAG_CORE, "Thread already running..");
+    ESP_LOGI(TAG_CORE, "%d: %s(): Thread already running", __LINE__, __FILE__);
     return;
   }
 
   _thread_running = true;
   while(true) {
-    ESP_LOGI(TAG_CORE, "Core looping");
+    ESP_LOGI(TAG_CORE, "%d: %s(): Core loop", __LINE__, __FILE__);
     vTaskDelay(5000 / portTICK_PERIOD_MS);
   }
 }

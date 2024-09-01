@@ -27,7 +27,7 @@ class SpiDevice {
               int miso, int mosi, int sck, int sda, int intrupt, int clock, uint32_t flag) :
               scan_interval_ms(interval), task_stack_size(stack), task_priority(prio),
               host(host), miso_gpio(miso), mosi_gpio(mosi), sck_gpio(sck), sda_gpio(sda),
-              clock_speed_hz(clock), device_flags(flag), is_bus_initialized(false) {
+              clock_speed_hz(clock), device_flags(flag), is_bus_initialized(false), scanning(false) {
     }
 
     SpiDevice() = delete;
@@ -55,6 +55,8 @@ class SpiDevice {
      * 
      */
     bool is_bus_initialized;
+
+    bool scanning;
 
     spi_device_handle_t spi_handle = nullptr;
     esp_event_loop_handle_t event_handle = nullptr;        /*<! Handle of event loop */

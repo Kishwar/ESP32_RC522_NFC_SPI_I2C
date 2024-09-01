@@ -4,3 +4,5 @@ Projects with FreeRTOS espressif IOT Framework on ESP32 using Ai-Thinker board t
 
 
 ![alt text](https://github.com/Kishwar/ESP32_RC522_NFC_SPI_I2C/blob/master/Image.jpeg?raw=true)
+
+![alt text](https://github.com/Kishwar/ESP32_RC522_NFC_SPI_I2C/blob/master/Image_1.jpeg?raw=true)
